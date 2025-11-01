@@ -990,6 +990,58 @@ export default function AllDataPage() {
           </div>
         </div>
 
+        {/* Comparison View */}
+        {compareMode && compareItems.length >= 2 && (
+          <div className={`rounded-2xl shadow-2xl p-6 mb-6 backdrop-blur-lg ${darkMode ? 'bg-gray-800/90 border border-gray-700' : 'bg-white/90'}`}>
+            <h2 className={`text-2xl font-bold mb-4 flex items-center gap-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+              <GitCompare className="w-6 h-6 text-blue-600" />
+              Comparison View ({compareItems.length} items)
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {compareItems.map((item, idx) => (
+                <div key={item.id} className={`p-4 rounded-lg border-2 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200'}`}>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className={`text-xs font-bold px-2 py-1 rounded ${darkMode ? 'bg-purple-600 text-white' : 'bg-purple-200 text-purple-800'}`}>
+                      #{idx + 1}
+                    </div>
+                    <button
+                      onClick={() => addToCompare(item)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className={`text-lg font-bold mb-1 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                    {item.name || 'N/A'}
+                  </div>
+                  <div className={`text-sm mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    {item.rank || 'N/A'}
+                  </div>
+                  <div className={`text-2xl font-bold mb-2 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>
+                    {item.salary.toLocaleString()} IQD
+                  </div>
+                  <div className={`text-sm mb-3 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    Total Notes: <span className="font-bold">{item.total_notes}</span>
+                  </div>
+                  <div className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                    {new Date(item.created_at).toLocaleDateString()}
+                  </div>
+                  <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
+                    <div className={`text-xs font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Breakdown:</div>
+                    {item.breakdown
+                      .filter(b => visibleDenominations.has(b.value))
+                      .map((b, i) => (
+                        <div key={i} className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                          {b.value.toLocaleString()} × {b.count}
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* All Calculations Table */}
         <div className={`rounded-2xl shadow-2xl p-6 backdrop-blur-lg ${darkMode ? 'bg-gray-800/90 border border-gray-700' : 'bg-white/90'}`}>
           <h2 className={`text-2xl font-bold mb-4 flex items-center gap-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
