@@ -920,7 +920,12 @@ export default function AllDataPage() {
           {showDenominationFilter && (
             <div className={`mt-4 p-4 rounded-lg border-2 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
               <div className="flex items-center justify-between mb-3">
-                <h3 className={`font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Select Currency Denominations for Calculation</h3>
+                <div>
+                  <h3 className={`font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Select Currency Denominations for Calculation</h3>
+                  <p className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    💡 Salaries will be recalculated based on selected currencies only
+                  </p>
+                </div>
                 <button
                   onClick={toggleAllDenominations}
                   className={`px-3 py-1 text-sm rounded-lg font-semibold ${darkMode ? 'bg-gray-600 hover:bg-gray-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-800'}`}
