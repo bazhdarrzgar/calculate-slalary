@@ -605,7 +605,7 @@ export default function AllDataPage() {
             </tr>
           </thead>
           <tbody>
-            ${filteredAndSortedHistory.map((item, index) => `
+            ${recalculatedHistory.map((item, index) => `
               <tr>
                 <td>${index + 1}</td>
                 <td>${item.name || 'N/A'}</td>
@@ -614,7 +614,7 @@ export default function AllDataPage() {
                 <td>${item.total_notes}</td>
                 <td>${new Date(item.created_at).toLocaleDateString()}</td>
                 <td class="breakdown">
-                  ${item.breakdown.filter(b => visibleDenominations.has(b.value)).map(b => `${b.value.toLocaleString()} IQD × ${b.count}`).join(', ')}
+                  ${item.breakdown.map(b => `${b.value.toLocaleString()} IQD × ${b.count}`).join(', ')}
                 </td>
               </tr>
             `).join('')}
