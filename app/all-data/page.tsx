@@ -241,6 +241,71 @@ export default function AllDataPage() {
     return Array.from(depts).sort();
   }, [history]);
 
+  // Calculate denomination summary across all calculations
+  const denominationSummary = useMemo(() => {
+    const summary: Record<number, DenominationSummary> = {};
+    
+    filteredAndSortedHistory.forEach(item => {
+      item.breakdown.forEach(breakdown => {
+        // Only include if denomination is visible
+        if (visibleDenominations.has(breakdown.value)) {
+          if (!summary[breakdown.value]) {
+            summary[breakdown.value] = {
+              value: breakdown.value,
+              total_count: 0,
+              image_name: breakdown.image_name
+            };
+          }
+          summary[breakdown.value].total_count += breakdown.count;
+        }
+      });
+    });
+
+    return Object.values(summary).sort((a, b) => b.value - a.value);
+  }, [filteredAndSortedHistory, visibleDenominations]);
+
+  // Calculate statistics (using filtered data)
+  const statistics = useMemo(() => {
+    if (filteredAndSortedHistory.length === 0) return null;
+    
+    const totalCalculations = filteredAndSortedHistory.length;
+    const totalSalary = filteredAndSortedHistory.reduce((sum, item) => sum + item.salary, 0);
+    const avgSalary = totalSalary / totalCalculations;
+    const totalNotes = filteredAndSortedHistory.reduce((sum, item) => sum + item.total_notes, 0);
+    const avgNotes = totalNotes / totalCalculations;
+    
+    const salaries = filteredAndSortedHistory.map(h => h.salary).sort((a, b) => a - b);
+    const maxSalary = Math.max(...salaries);
+    const minSalary = Math.min(...salaries);
+    
+    // Group by month
+    const byMonth: Record<string, number> = {};
+    filteredAndSortedHistory.forEach(item => {
+      const month = new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+      byMonth[month] = (byMonth[month] || 0) + 1;
+    });
+    
+    // Group by department
+    const byDepartment: Record<string, number> = {};
+    filteredAndSortedHistory.forEach(item => {
+      if (item.department) {
+        byDepartment[item.department] = (byDepartment[item.department] || 0) + 1;
+      }
+    });
+    
+    return {
+      totalCalculations,
+      totalSalary,
+      avgSalary,
+      maxSalary,
+      minSalary,
+      totalNotes,
+      avgNotes,
+      byMonth,
+      byDepartment
+    };
+  }, [filteredAndSortedHistory]);
+
   const exportToExcel = async () => {
     if (history.length === 0) return;
     
