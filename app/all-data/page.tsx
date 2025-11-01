@@ -560,16 +560,16 @@ export default function AllDataPage() {
             </tr>
           </thead>
           <tbody>
-            ${history.map((item, index) => `
+            ${filteredAndSortedHistory.map((item, index) => `
               <tr>
                 <td>${index + 1}</td>
-                <td>${item.name}</td>
-                <td>${item.rank}</td>
+                <td>${item.name || 'N/A'}</td>
+                <td>${item.rank || 'N/A'}</td>
                 <td>${item.salary.toLocaleString()}</td>
                 <td>${item.total_notes}</td>
                 <td>${new Date(item.created_at).toLocaleDateString()}</td>
                 <td class="breakdown">
-                  ${item.breakdown.map(b => `${b.value.toLocaleString()} IQD × ${b.count}`).join(', ')}
+                  ${item.breakdown.filter(b => visibleDenominations.has(b.value)).map(b => `${b.value.toLocaleString()} IQD × ${b.count}`).join(', ')}
                 </td>
               </tr>
             `).join('')}
