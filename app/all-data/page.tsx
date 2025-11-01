@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
-import { ArrowLeft, Download, Search, Filter, FileText, Sheet, Printer, BarChart3, Calendar, User, Briefcase, DollarSign, FileSpreadsheet, TrendingUp, ArrowUp, ArrowDown } from "lucide-react";
+import { ArrowLeft, Download, Search, Filter, FileText, Sheet, Printer, BarChart3, Calendar, User, Briefcase, DollarSign, FileSpreadsheet, TrendingUp, ArrowUp, ArrowDown, Trash2, CheckSquare, Square, GitCompare, Eye, EyeOff, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import AnimatedBackground from "../components/AnimatedBackground";
 
@@ -22,12 +22,20 @@ interface HistoryItem {
   breakdown: BreakdownItem[];
   total_notes: number;
   created_at: string;
+  department?: string;
 }
 
 interface DenominationSummary {
   value: number;
   total_count: number;
   image_name: string;
+}
+
+interface Denomination {
+  value: number;
+  image_name: string;
+  is_available: boolean;
+  amount: number;
 }
 
 export default function AllDataPage() {
