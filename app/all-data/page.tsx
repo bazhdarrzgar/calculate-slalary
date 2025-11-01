@@ -310,30 +310,30 @@ export default function AllDataPage() {
     return Object.values(summary).sort((a, b) => b.value - a.value);
   }, [recalculatedHistory]);
 
-  // Calculate statistics (using filtered data)
+  // Calculate statistics (using recalculated data)
   const statistics = useMemo(() => {
-    if (filteredAndSortedHistory.length === 0) return null;
+    if (recalculatedHistory.length === 0) return null;
     
-    const totalCalculations = filteredAndSortedHistory.length;
-    const totalSalary = filteredAndSortedHistory.reduce((sum, item) => sum + item.salary, 0);
+    const totalCalculations = recalculatedHistory.length;
+    const totalSalary = recalculatedHistory.reduce((sum, item) => sum + item.salary, 0);
     const avgSalary = totalSalary / totalCalculations;
-    const totalNotes = filteredAndSortedHistory.reduce((sum, item) => sum + item.total_notes, 0);
+    const totalNotes = recalculatedHistory.reduce((sum, item) => sum + item.total_notes, 0);
     const avgNotes = totalNotes / totalCalculations;
     
-    const salaries = filteredAndSortedHistory.map(h => h.salary).sort((a, b) => a - b);
+    const salaries = recalculatedHistory.map(h => h.salary).sort((a, b) => a - b);
     const maxSalary = Math.max(...salaries);
     const minSalary = Math.min(...salaries);
     
     // Group by month
     const byMonth: Record<string, number> = {};
-    filteredAndSortedHistory.forEach(item => {
+    recalculatedHistory.forEach(item => {
       const month = new Date(item.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
       byMonth[month] = (byMonth[month] || 0) + 1;
     });
     
     // Group by department
     const byDepartment: Record<string, number> = {};
-    filteredAndSortedHistory.forEach(item => {
+    recalculatedHistory.forEach(item => {
       if (item.department) {
         byDepartment[item.department] = (byDepartment[item.department] || 0) + 1;
       }
@@ -350,7 +350,7 @@ export default function AllDataPage() {
       byMonth,
       byDepartment
     };
-  }, [history, searchQuery, sortBy, sortOrder, filterSalaryMin, filterSalaryMax, dateFrom, dateTo, departmentFilter]);
+  }, [recalculatedHistory]);
 
   const exportToExcel = async () => {
     if (history.length === 0) return;
