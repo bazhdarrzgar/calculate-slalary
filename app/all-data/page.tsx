@@ -460,7 +460,7 @@ export default function AllDataPage() {
   };
 
   const printAllData = () => {
-    if (filteredAndSortedHistory.length === 0) {
+    if (recalculatedHistory.length === 0) {
       alert("No data to print");
       return;
     }
