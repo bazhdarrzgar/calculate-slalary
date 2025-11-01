@@ -49,6 +49,17 @@ export default function AllDataPage() {
   const [filterSalaryMin, setFilterSalaryMin] = useState<number>(0);
   const [filterSalaryMax, setFilterSalaryMax] = useState<number>(0);
   const [showFilters, setShowFilters] = useState(false);
+  
+  // New state for enhanced features
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+  const [denominations, setDenominations] = useState<Denomination[]>([]);
+  const [visibleDenominations, setVisibleDenominations] = useState<Set<number>>(new Set());
+  const [showDenominationFilter, setShowDenominationFilter] = useState(false);
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState<string>("");
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareItems, setCompareItems] = useState<HistoryItem[]>([]);
 
   useEffect(() => {
     const saved = localStorage.getItem('darkMode');
