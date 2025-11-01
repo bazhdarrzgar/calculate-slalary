@@ -616,14 +616,15 @@ export default function AllDataPage() {
   };
 
   const exportToCSV = () => {
-    if (history.length === 0) return;
+    if (filteredAndSortedHistory.length === 0) return;
     
-    let csvContent = "Index,Name,Rank/Position,Salary (IQD),Total Notes,Date,Breakdown\n";
-    history.forEach((item, index) => {
+    let csvContent = "Index,Name,Rank/Position,Department,Salary (IQD),Total Notes,Date,Breakdown\n";
+    filteredAndSortedHistory.forEach((item, index) => {
       const breakdown = item.breakdown
+        .filter(b => visibleDenominations.has(b.value))
         .map(b => `${b.value.toLocaleString()} IQD × ${b.count}`)
         .join(' | ');
-      csvContent += `${index + 1},"${item.name}","${item.rank}",${item.salary},${item.total_notes},"${new Date(item.created_at).toLocaleDateString()}","${breakdown}"\n`;
+      csvContent += `${index + 1},"${item.name}","${item.rank}","${item.department || 'N/A'}",${item.salary},${item.total_notes},"${new Date(item.created_at).toLocaleDateString()}","${breakdown}"\n`;
     });
     
     const blob = new Blob([csvContent], { type: 'text/csv' });
