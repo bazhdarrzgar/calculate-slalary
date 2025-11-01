@@ -140,6 +140,29 @@ export default function AllDataPage() {
     }
   };
 
+  // Calculation function (same logic as main page)
+  const calculateBreakdown = (salary: number, availableDenominations: number[]): BreakdownItem[] => {
+    // Sort denominations in descending order
+    const sortedDenoms = [...availableDenominations].sort((a, b) => b - a);
+    
+    let remaining = salary;
+    const breakdown: BreakdownItem[] = [];
+    
+    for (const denom of sortedDenoms) {
+      if (remaining >= denom) {
+        const count = Math.floor(remaining / denom);
+        breakdown.push({
+          value: denom,
+          count,
+          image_name: `${denom}.jpg`
+        });
+        remaining -= count * denom;
+      }
+    }
+    
+    return breakdown;
+  };
+
   const toggleDenominationVisibility = (value: number) => {
     const newVisible = new Set(visibleDenominations);
     if (newVisible.has(value)) {
