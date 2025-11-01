@@ -860,6 +860,13 @@ export default function Home() {
             </button>
             
             <button
+              onClick={() => router.push('/dashboard')}
+              className={`p-3 rounded-lg transition-all transform hover:scale-110 ${darkMode ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700' : 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700'}`}
+              title="Analytics Dashboard"
+            >
+              <LineChart className="w-5 h-5" />
+            </button>
+            <button
               onClick={() => router.push('/all-data')}
               className={`p-3 rounded-lg transition-all transform hover:scale-110 ${darkMode ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:from-blue-700 hover:to-cyan-700' : 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:from-blue-700 hover:to-cyan-700'}`}
               title="View All Data & Analytics"
