@@ -415,7 +415,7 @@ export default function AllDataPage() {
   };
 
   const printAllData = () => {
-    if (history.length === 0) {
+    if (filteredAndSortedHistory.length === 0) {
       alert("No data to print");
       return;
     }
