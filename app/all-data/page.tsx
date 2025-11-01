@@ -1137,7 +1137,7 @@ export default function AllDataPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAndSortedHistory.map((item, index) => (
+                  {recalculatedHistory.map((item, index) => (
                     <tr
                       key={item.id}
                       className={`border-b transition-colors ${
@@ -1170,13 +1170,11 @@ export default function AllDataPage() {
                         {new Date(item.created_at).toLocaleDateString()}
                       </td>
                       <td className={`p-3 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {item.breakdown
-                          .filter(b => visibleDenominations.has(b.value))
-                          .map((b, i) => (
-                            <div key={i} className="whitespace-nowrap">
-                              {b.value.toLocaleString()} IQD × {b.count}
-                            </div>
-                          ))}
+                        {item.breakdown.map((b, i) => (
+                          <div key={i} className="whitespace-nowrap">
+                            {b.value.toLocaleString()} IQD × {b.count}
+                          </div>
+                        ))}
                       </td>
                       {compareMode && (
                         <td className={`p-3`}>
