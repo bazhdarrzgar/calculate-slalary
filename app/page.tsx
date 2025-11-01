@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
-import { Download, History, Calculator, Trash2, FileText, Sheet, Search, RotateCcw, Moon, Sun, BarChart3, FileDown, Edit, Printer, Sparkles, Database, RefreshCw } from "lucide-react";
+import { Download, History, Calculator, Trash2, FileText, Sheet, Search, RotateCcw, Moon, Sun, BarChart3, FileDown, Edit, Printer, Sparkles, Database, RefreshCw, LineChart } from "lucide-react";
 import Fuse from "fuse.js";
 import AnimatedBackground from "./components/AnimatedBackground";
 import { useRouter } from "next/navigation";
