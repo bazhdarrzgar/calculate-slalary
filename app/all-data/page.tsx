@@ -1074,13 +1074,18 @@ export default function AllDataPage() {
                   </div>
                   <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
                     <div className={`text-xs font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Breakdown:</div>
-                    {item.breakdown
-                      .filter(b => visibleDenominations.has(b.value))
-                      .map((b, i) => (
+                    {(() => {
+                      // Recalculate this item's breakdown with selected denominations
+                      const availableDenoms = Array.from(visibleDenominations);
+                      const recalcBreakdown = availableDenoms.length > 0 
+                        ? calculateBreakdown(item.salary, availableDenoms)
+                        : [];
+                      return recalcBreakdown.map((b, i) => (
                         <div key={i} className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                           {b.value.toLocaleString()} × {b.count}
                         </div>
-                      ))}
+                      ));
+                    })()}
                   </div>
                 </div>
               ))}
