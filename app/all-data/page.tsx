@@ -262,7 +262,7 @@ export default function AllDataPage() {
     });
 
     return Object.values(summary).sort((a, b) => b.value - a.value);
-  }, [filteredAndSortedHistory, visibleDenominations]);
+  }, [history, searchQuery, sortBy, sortOrder, filterSalaryMin, filterSalaryMax, dateFrom, dateTo, departmentFilter, visibleDenominations]);
 
   // Calculate statistics (using filtered data)
   const statistics = useMemo(() => {
