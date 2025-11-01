@@ -1092,7 +1092,7 @@ export default function AllDataPage() {
         <div className={`rounded-2xl shadow-2xl p-6 backdrop-blur-lg ${darkMode ? 'bg-gray-800/90 border border-gray-700' : 'bg-white/90'}`}>
           <h2 className={`text-2xl font-bold mb-4 flex items-center gap-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
             <FileText className="w-6 h-6 text-blue-600" />
-            All Calculations ({filteredAndSortedHistory.length})
+            All Calculations ({recalculatedHistory.length})
           </h2>
           
           {loading ? (
@@ -1100,7 +1100,7 @@ export default function AllDataPage() {
               <div className="animate-spin w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full mx-auto"></div>
               <p className={`mt-4 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Loading data...</p>
             </div>
-          ) : filteredAndSortedHistory.length === 0 ? (
+          ) : recalculatedHistory.length === 0 ? (
             <p className={`text-center py-12 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
               {searchQuery || filterSalaryMin > 0 || filterSalaryMax > 0 ? "No matching calculations found" : "No calculations yet"}
             </p>
@@ -1114,7 +1114,7 @@ export default function AllDataPage() {
                         onClick={toggleAllRows}
                         className="hover:scale-110 transition-transform"
                       >
-                        {selectedRows.size === filteredAndSortedHistory.length && filteredAndSortedHistory.length > 0 ? (
+                        {selectedRows.size === recalculatedHistory.length && recalculatedHistory.length > 0 ? (
                           <CheckSquare className="w-5 h-5" />
                         ) : (
                           <Square className="w-5 h-5" />
