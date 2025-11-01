@@ -304,7 +304,7 @@ export default function AllDataPage() {
       byMonth,
       byDepartment
     };
-  }, [filteredAndSortedHistory]);
+  }, [history, searchQuery, sortBy, sortOrder, filterSalaryMin, filterSalaryMax, dateFrom, dateTo, departmentFilter]);
 
   const exportToExcel = async () => {
     if (history.length === 0) return;
