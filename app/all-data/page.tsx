@@ -1063,36 +1063,94 @@ export default function AllDataPage() {
               <table className="w-full">
                 <thead>
                   <tr className={`${darkMode ? 'bg-gray-700' : 'bg-purple-100'}`}>
+                    <th className={`p-3 text-left font-bold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                      <button
+                        onClick={toggleAllRows}
+                        className="hover:scale-110 transition-transform"
+                      >
+                        {selectedRows.size === filteredAndSortedHistory.length && filteredAndSortedHistory.length > 0 ? (
+                          <CheckSquare className="w-5 h-5" />
+                        ) : (
+                          <Square className="w-5 h-5" />
+                        )}
+                      </button>
+                    </th>
                     <th className={`p-3 text-left font-bold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>#</th>
                     <th className={`p-3 text-left font-bold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Name</th>
                     <th className={`p-3 text-left font-bold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Rank/Position</th>
+                    {availableDepartments.length > 0 && (
+                      <th className={`p-3 text-left font-bold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Department</th>
+                    )}
                     <th className={`p-3 text-left font-bold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Salary (IQD)</th>
                     <th className={`p-3 text-left font-bold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Total Notes</th>
                     <th className={`p-3 text-left font-bold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Date</th>
                     <th className={`p-3 text-left font-bold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Breakdown</th>
+                    {compareMode && (
+                      <th className={`p-3 text-left font-bold ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>Compare</th>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
                   {filteredAndSortedHistory.map((item, index) => (
                     <tr
                       key={item.id}
-                      className={`border-b transition-colors ${darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-purple-50'}`}
+                      className={`border-b transition-colors ${
+                        selectedRows.has(item.id) 
+                          ? 'bg-purple-100 dark:bg-purple-900/30' 
+                          : darkMode ? 'border-gray-700 hover:bg-gray-700/50' : 'border-gray-200 hover:bg-purple-50'
+                      }`}
                     >
+                      <td className={`p-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        <button
+                          onClick={() => toggleRowSelection(item.id)}
+                          className="hover:scale-110 transition-transform"
+                        >
+                          {selectedRows.has(item.id) ? (
+                            <CheckSquare className="w-5 h-5 text-purple-600" />
+                          ) : (
+                            <Square className="w-5 h-5" />
+                          )}
+                        </button>
+                      </td>
                       <td className={`p-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{index + 1}</td>
-                      <td className={`p-3 font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>{item.name}</td>
-                      <td className={`p-3 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{item.rank}</td>
+                      <td className={`p-3 font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>{item.name || 'N/A'}</td>
+                      <td className={`p-3 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{item.rank || 'N/A'}</td>
+                      {availableDepartments.length > 0 && (
+                        <td className={`p-3 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{item.department || 'N/A'}</td>
+                      )}
                       <td className={`p-3 font-bold ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>{item.salary.toLocaleString()}</td>
                       <td className={`p-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{item.total_notes}</td>
                       <td className={`p-3 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         {new Date(item.created_at).toLocaleDateString()}
                       </td>
                       <td className={`p-3 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                        {item.breakdown.map((b, i) => (
-                          <div key={i} className="whitespace-nowrap">
-                            {b.value.toLocaleString()} IQD × {b.count}
-                          </div>
-                        ))}
+                        {item.breakdown
+                          .filter(b => visibleDenominations.has(b.value))
+                          .map((b, i) => (
+                            <div key={i} className="whitespace-nowrap">
+                              {b.value.toLocaleString()} IQD × {b.count}
+                            </div>
+                          ))}
                       </td>
+                      {compareMode && (
+                        <td className={`p-3`}>
+                          <button
+                            onClick={() => addToCompare(item)}
+                            disabled={compareItems.length >= 4 && !compareItems.find(i => i.id === item.id)}
+                            className={`px-3 py-1 rounded-lg text-sm font-semibold transition-all ${
+                              compareItems.find(i => i.id === item.id)
+                                ? 'bg-blue-600 text-white'
+                                : compareItems.length >= 4
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : darkMode
+                                ? 'bg-gray-600 hover:bg-gray-500 text-white'
+                                : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
+                            }`}
+                          >
+                            {compareItems.find(i => i.id === item.id) ? 'Remove' : 'Add'}
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
