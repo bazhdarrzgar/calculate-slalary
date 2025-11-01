@@ -177,21 +177,24 @@ export default function AllDataPage() {
   const denominationSummary = useMemo(() => {
     const summary: Record<number, DenominationSummary> = {};
     
-    history.forEach(item => {
+    filteredAndSortedHistory.forEach(item => {
       item.breakdown.forEach(breakdown => {
-        if (!summary[breakdown.value]) {
-          summary[breakdown.value] = {
-            value: breakdown.value,
-            total_count: 0,
-            image_name: breakdown.image_name
-          };
+        // Only include if denomination is visible
+        if (visibleDenominations.has(breakdown.value)) {
+          if (!summary[breakdown.value]) {
+            summary[breakdown.value] = {
+              value: breakdown.value,
+              total_count: 0,
+              image_name: breakdown.image_name
+            };
+          }
+          summary[breakdown.value].total_count += breakdown.count;
         }
-        summary[breakdown.value].total_count += breakdown.count;
       });
     });
 
     return Object.values(summary).sort((a, b) => b.value - a.value);
-  }, [history]);
+  }, [filteredAndSortedHistory, visibleDenominations]);
 
   // Calculate statistics
   const statistics = useMemo(() => {
