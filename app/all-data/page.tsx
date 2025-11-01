@@ -380,9 +380,8 @@ export default function AllDataPage() {
         fgColor: { argb: 'FF6B46C1' }
       };
       
-      filteredAndSortedHistory.forEach((item, index) => {
+      recalculatedHistory.forEach((item, index) => {
         const breakdown = item.breakdown
-          .filter(b => visibleDenominations.has(b.value))
           .map(b => `${b.value.toLocaleString()} IQD × ${b.count}`)
           .join(', ');
         
