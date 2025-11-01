@@ -67,7 +67,19 @@ export default function AllDataPage() {
       setDarkMode(JSON.parse(saved));
     }
     fetchAllData();
+    fetchDenominations();
   }, []);
+
+  const fetchDenominations = async () => {
+    try {
+      const response = await axios.get<Denomination[]>(`${API}/denominations`);
+      setDenominations(response.data);
+      // Initially show all denominations
+      setVisibleDenominations(new Set(response.data.map(d => d.value)));
+    } catch (err) {
+      console.error("Error fetching denominations:", err);
+    }
+  };
 
   useEffect(() => {
     if (darkMode) {
