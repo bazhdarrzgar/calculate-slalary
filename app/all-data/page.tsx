@@ -597,7 +597,7 @@ export default function AllDataPage() {
         </table>
         
         <div class="footer">
-          M.I.S Salary Calculator | Total Records: ${history.length}
+          M.I.S Salary Calculator | Total Records: ${filteredAndSortedHistory.length}
         </div>
         
         <script>
