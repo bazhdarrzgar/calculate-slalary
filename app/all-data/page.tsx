@@ -236,7 +236,8 @@ export default function AllDataPage() {
       filtered = filtered.filter(item => 
         item.name.toLowerCase().includes(query) ||
         item.rank.toLowerCase().includes(query) ||
-        item.salary.toString().includes(query)
+        item.salary.toString().includes(query) ||
+        (item.department && item.department.toLowerCase().includes(query))
       );
     }
 
@@ -246,6 +247,22 @@ export default function AllDataPage() {
     }
     if (filterSalaryMax > 0) {
       filtered = filtered.filter(item => item.salary <= filterSalaryMax);
+    }
+
+    // Apply date range filter
+    if (dateFrom) {
+      const fromDate = new Date(dateFrom);
+      filtered = filtered.filter(item => new Date(item.created_at) >= fromDate);
+    }
+    if (dateTo) {
+      const toDate = new Date(dateTo);
+      toDate.setHours(23, 59, 59, 999);
+      filtered = filtered.filter(item => new Date(item.created_at) <= toDate);
+    }
+
+    // Apply department filter
+    if (departmentFilter) {
+      filtered = filtered.filter(item => item.department === departmentFilter);
     }
 
     // Apply sorting
@@ -264,7 +281,18 @@ export default function AllDataPage() {
     });
 
     return filtered;
-  }, [history, searchQuery, sortBy, sortOrder, filterSalaryMin, filterSalaryMax]);
+  }, [history, searchQuery, sortBy, sortOrder, filterSalaryMin, filterSalaryMax, dateFrom, dateTo, departmentFilter]);
+
+  // Get unique departments from history
+  const availableDepartments = useMemo(() => {
+    const depts = new Set<string>();
+    history.forEach(item => {
+      if (item.department) {
+        depts.add(item.department);
+      }
+    });
+    return Array.from(depts).sort();
+  }, [history]);
 
   const exportToExcel = async () => {
     if (history.length === 0) return;
