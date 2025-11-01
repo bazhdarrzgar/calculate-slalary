@@ -264,28 +264,51 @@ export default function AllDataPage() {
     return Array.from(depts).sort();
   }, [history]);
 
-  // Calculate denomination summary across all calculations
+  // Recalculate all history items based on selected denominations
+  const recalculatedHistory = useMemo(() => {
+    const availableDenoms = Array.from(visibleDenominations);
+    
+    if (availableDenoms.length === 0) {
+      // If no denominations selected, return empty breakdowns
+      return filteredAndSortedHistory.map(item => ({
+        ...item,
+        breakdown: [],
+        total_notes: 0
+      }));
+    }
+    
+    return filteredAndSortedHistory.map(item => {
+      // Recalculate breakdown using selected denominations
+      const newBreakdown = calculateBreakdown(item.salary, availableDenoms);
+      const newTotalNotes = newBreakdown.reduce((sum, b) => sum + b.count, 0);
+      
+      return {
+        ...item,
+        breakdown: newBreakdown,
+        total_notes: newTotalNotes
+      };
+    });
+  }, [filteredAndSortedHistory, visibleDenominations]);
+
+  // Calculate denomination summary across all recalculated calculations
   const denominationSummary = useMemo(() => {
     const summary: Record<number, DenominationSummary> = {};
     
-    filteredAndSortedHistory.forEach(item => {
+    recalculatedHistory.forEach(item => {
       item.breakdown.forEach(breakdown => {
-        // Only include if denomination is visible
-        if (visibleDenominations.has(breakdown.value)) {
-          if (!summary[breakdown.value]) {
-            summary[breakdown.value] = {
-              value: breakdown.value,
-              total_count: 0,
-              image_name: breakdown.image_name
-            };
-          }
-          summary[breakdown.value].total_count += breakdown.count;
+        if (!summary[breakdown.value]) {
+          summary[breakdown.value] = {
+            value: breakdown.value,
+            total_count: 0,
+            image_name: breakdown.image_name
+          };
         }
+        summary[breakdown.value].total_count += breakdown.count;
       });
     });
 
     return Object.values(summary).sort((a, b) => b.value - a.value);
-  }, [history, searchQuery, sortBy, sortOrder, filterSalaryMin, filterSalaryMax, dateFrom, dateTo, departmentFilter, visibleDenominations]);
+  }, [recalculatedHistory]);
 
   // Calculate statistics (using filtered data)
   const statistics = useMemo(() => {
