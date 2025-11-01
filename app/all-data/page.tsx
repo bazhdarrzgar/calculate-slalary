@@ -101,6 +101,78 @@ export default function AllDataPage() {
     }
   };
 
+  const toggleRowSelection = (id: string) => {
+    const newSelection = new Set(selectedRows);
+    if (newSelection.has(id)) {
+      newSelection.delete(id);
+    } else {
+      newSelection.add(id);
+    }
+    setSelectedRows(newSelection);
+  };
+
+  const toggleAllRows = () => {
+    if (selectedRows.size === filteredAndSortedHistory.length) {
+      setSelectedRows(new Set());
+    } else {
+      setSelectedRows(new Set(filteredAndSortedHistory.map(item => item.id)));
+    }
+  };
+
+  const bulkDelete = async () => {
+    if (selectedRows.size === 0) return;
+    
+    const confirmDelete = confirm(`Are you sure you want to delete ${selectedRows.size} record(s)?`);
+    if (!confirmDelete) return;
+
+    try {
+      setLoading(true);
+      await Promise.all(
+        Array.from(selectedRows).map(id => axios.delete(`${API}/history/${id}`))
+      );
+      setSelectedRows(new Set());
+      await fetchAllData();
+    } catch (err) {
+      console.error("Error deleting records:", err);
+      alert("Failed to delete some records");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleDenominationVisibility = (value: number) => {
+    const newVisible = new Set(visibleDenominations);
+    if (newVisible.has(value)) {
+      newVisible.delete(value);
+    } else {
+      newVisible.add(value);
+    }
+    setVisibleDenominations(newVisible);
+  };
+
+  const toggleAllDenominations = () => {
+    if (visibleDenominations.size === denominations.length) {
+      setVisibleDenominations(new Set());
+    } else {
+      setVisibleDenominations(new Set(denominations.map(d => d.value)));
+    }
+  };
+
+  const addToCompare = (item: HistoryItem) => {
+    if (compareItems.find(i => i.id === item.id)) {
+      setCompareItems(compareItems.filter(i => i.id !== item.id));
+    } else if (compareItems.length < 4) {
+      setCompareItems([...compareItems, item]);
+    } else {
+      alert("You can compare up to 4 items at once");
+    }
+  };
+
+  const clearComparison = () => {
+    setCompareItems([]);
+    setCompareMode(false);
+  };
+
   // Calculate denomination summary across all calculations
   const denominationSummary = useMemo(() => {
     const summary: Record<number, DenominationSummary> = {};
