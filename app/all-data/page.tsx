@@ -783,7 +783,8 @@ export default function AllDataPage() {
           {/* Filter Panel */}
           {showFilters && (
             <div className={`mt-4 p-4 rounded-lg border-2 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <h3 className={`font-bold mb-3 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Advanced Filters</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                   <label className={`block text-sm font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                     Minimum Salary (IQD)
@@ -808,15 +809,111 @@ export default function AllDataPage() {
                     className={`w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none ${darkMode ? 'bg-gray-600 border-gray-500 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
                   />
                 </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    Department
+                  </label>
+                  <select
+                    value={departmentFilter}
+                    onChange={(e) => setDepartmentFilter(e.target.value)}
+                    className={`w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none ${darkMode ? 'bg-gray-600 border-gray-500 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
+                  >
+                    <option value="">All Departments</option>
+                    {availableDepartments.map(dept => (
+                      <option key={dept} value={dept}>{dept}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    Date From
+                  </label>
+                  <input
+                    type="date"
+                    value={dateFrom}
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    className={`w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none ${darkMode ? 'bg-gray-600 border-gray-500 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
+                  />
+                </div>
+                <div>
+                  <label className={`block text-sm font-semibold mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    Date To
+                  </label>
+                  <input
+                    type="date"
+                    value={dateTo}
+                    onChange={(e) => setDateTo(e.target.value)}
+                    className={`w-full px-4 py-2 border-2 rounded-lg focus:border-purple-500 focus:outline-none ${darkMode ? 'bg-gray-600 border-gray-500 text-white' : 'bg-white border-gray-300 text-gray-900'}`}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => {
+                    setFilterSalaryMin(0);
+                    setFilterSalaryMax(0);
+                    setDateFrom("");
+                    setDateTo("");
+                    setDepartmentFilter("");
+                  }}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all"
+                >
+                  Clear All Filters
+                </button>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className={`px-4 py-2 rounded-lg font-semibold transition-all ${darkMode ? 'bg-gray-600 hover:bg-gray-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-800'}`}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Denomination Filter Panel */}
+          {showDenominationFilter && (
+            <div className={`mt-4 p-4 rounded-lg border-2 ${darkMode ? 'bg-gray-700 border-gray-600' : 'bg-gray-50 border-gray-200'}`}>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className={`font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Select Currency Denominations to Display</h3>
+                <button
+                  onClick={toggleAllDenominations}
+                  className={`px-3 py-1 text-sm rounded-lg font-semibold ${darkMode ? 'bg-gray-600 hover:bg-gray-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-800'}`}
+                >
+                  {visibleDenominations.size === denominations.length ? 'Deselect All' : 'Select All'}
+                </button>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                {denominations.map((denom) => (
+                  <button
+                    key={denom.value}
+                    onClick={() => toggleDenominationVisibility(denom.value)}
+                    className={`p-3 rounded-lg border-2 transition-all ${
+                      visibleDenominations.has(denom.value)
+                        ? 'border-green-500 bg-green-50 dark:bg-green-900/30'
+                        : 'border-gray-300 bg-gray-100 dark:bg-gray-800 opacity-50'
+                    }`}
+                  >
+                    <img
+                      src={`/currency/${denom.image_name}`}
+                      alt={`${denom.value} Dinar`}
+                      className="w-full h-12 object-cover rounded mb-1"
+                    />
+                    <div className={`text-xs font-semibold text-center ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                      {denom.value.toLocaleString()} IQD
+                    </div>
+                    {visibleDenominations.has(denom.value) && (
+                      <div className="text-center mt-1">
+                        <Eye className="w-4 h-4 text-green-600 mx-auto" />
+                      </div>
+                    )}
+                  </button>
+                ))}
               </div>
               <button
-                onClick={() => {
-                  setFilterSalaryMin(0);
-                  setFilterSalaryMax(0);
-                }}
-                className="mt-3 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold"
+                onClick={() => setShowDenominationFilter(false)}
+                className={`mt-3 px-4 py-2 rounded-lg font-semibold transition-all ${darkMode ? 'bg-gray-600 hover:bg-gray-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-800'}`}
               >
-                Clear Filters
+                Close
               </button>
             </div>
           )}
